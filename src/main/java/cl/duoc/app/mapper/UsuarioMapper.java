@@ -11,8 +11,8 @@ public class UsuarioMapper {
         return new UsuarioDTO(
                 usuario.getId(),
                 usuario.getNombre(),
-                usuario.getEmail(),
                 usuario.getPassword(),
+                usuario.getEmail(),
                 usuario.isAdmin()
         );
     }
