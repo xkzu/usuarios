@@ -16,4 +16,7 @@ public interface UsuarioService {
 
     void delete(Long id);
 
+    Optional<Usuario> login(String email, String password);
+
+    void passwordRecovery(String email, String password);
 }

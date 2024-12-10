@@ -5,15 +5,19 @@ import cl.duoc.app.mapper.UsuarioMapper;
 import cl.duoc.app.model.Usuario;
 import cl.duoc.app.service.UsuarioService;
 import cl.duoc.app.util.UsuarioUtil;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+@Log4j2
 @RestController
 @RequestMapping("/usuarios")
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", allowCredentials = "true")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
@@ -21,6 +25,18 @@ public class UsuarioController {
     @Autowired
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UsuarioDTO> login(@RequestBody UsuarioDTO usuarioDTO) {
+        try {
+            Optional<Usuario> usuario = usuarioService.login(usuarioDTO.getEmail(), usuarioDTO.getPassword());
+            return usuario.map(value -> ResponseEntity.ok(UsuarioMapper.toDTO(value)))
+                    .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null));
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/listar")
@@ -44,7 +60,7 @@ public class UsuarioController {
             }
             Optional<Usuario> usuario = usuarioService.findById(id);
             return usuario.map(value -> ResponseEntity.ok(UsuarioMapper.toDTO(value)))
-                    .orElseGet(() -> ResponseEntity.notFound().build());
+                    .orElseGet(() -> ResponseEntity.ok().build());
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
@@ -69,14 +85,17 @@ public class UsuarioController {
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<UsuarioDTO> actualizar(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
         try {
+            log.info("id: {}, usuarioDTO: {}", id, usuarioDTO);
             if (id == null || id <= 0) {
                 return ResponseEntity.badRequest().build();
             }
             Usuario usuario = UsuarioMapper.toEntity(usuarioDTO);
             usuario.setId(id);
+            log.info("usuario: {}", usuario);
             Usuario updatedUsuario = usuarioService.save(usuario);
             return ResponseEntity.ok(UsuarioMapper.toDTO(updatedUsuario));
         } catch (Exception e) {
+            log.error("error: {}", e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -90,6 +109,21 @@ public class UsuarioController {
             usuarioService.delete(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PutMapping("/recuperar/password/{email}/{password}")
+    public ResponseEntity<UsuarioDTO> recuperarPassword(@PathVariable String email, @PathVariable String password) {
+        log.info("email: {}, password: {}", email, password);
+        try {
+            if (UsuarioUtil.isEmptyOrNull(email) || UsuarioUtil.isEmptyOrNull(password)) {
+                return ResponseEntity.badRequest().build();
+            }
+            usuarioService.passwordRecovery(email, password);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error("error: {}", e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
     }
