@@ -1,1 +1,8 @@
+cl\duoc\app\config\WebConfigTest.class
 cl\duoc\app\AppTest.class
+cl\duoc\app\controller\UsuarioControllerTest.class
+cl\duoc\app\dto\UsuarioDTOTest.class
+cl\duoc\app\service\UsuarioServiceImplTest.class
+cl\duoc\app\model\UsuarioTest.class
+cl\duoc\app\mapper\UsuarioMapperTest.class
+cl\duoc\app\util\UsuarioUtilTest.class

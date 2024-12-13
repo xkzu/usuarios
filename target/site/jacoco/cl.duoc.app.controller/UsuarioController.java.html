@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">usuario</a> &gt; <a href="index.source.html" class="el_package">cl.duoc.app.controller</a> &gt; <span class="el_source">UsuarioController.java</span></div><h1>UsuarioController.java</h1><pre class="source lang-java linenums">package cl.duoc.app.controller;
+
+import cl.duoc.app.dto.UsuarioDTO;
+import cl.duoc.app.mapper.UsuarioMapper;
+import cl.duoc.app.model.Usuario;
+import cl.duoc.app.service.UsuarioService;
+import cl.duoc.app.util.UsuarioUtil;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+<span class="fc" id="L17">@Log4j2</span>
+@RestController
+@RequestMapping(&quot;/usuarios&quot;)
+@CrossOrigin(origins = &quot;http://localhost:4200&quot;, allowedHeaders = &quot;*&quot;, allowCredentials = &quot;true&quot;)
+public class UsuarioController {
+
+    private final UsuarioService usuarioService;
+
+    @Autowired
+<span class="fc" id="L26">    public UsuarioController(UsuarioService usuarioService) {</span>
+<span class="fc" id="L27">        this.usuarioService = usuarioService;</span>
+<span class="fc" id="L28">    }</span>
+
+    @PostMapping(&quot;/login&quot;)
+    public ResponseEntity&lt;UsuarioDTO&gt; login(@RequestBody UsuarioDTO usuarioDTO) {
+        try {
+<span class="fc" id="L33">            Optional&lt;Usuario&gt; usuario = usuarioService.login(usuarioDTO.getEmail(), usuarioDTO.getPassword());</span>
+<span class="fc" id="L34">            return usuario.map(value -&gt; ResponseEntity.ok(UsuarioMapper.toDTO(value)))</span>
+<span class="fc" id="L35">                    .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null));</span>
+
+<span class="nc" id="L37">        } catch (Exception e) {</span>
+<span class="nc" id="L38">            return ResponseEntity.internalServerError().build();</span>
+        }
+    }
+
+    @GetMapping(&quot;/listar&quot;)
+    public ResponseEntity&lt;List&lt;UsuarioDTO&gt;&gt; listar() {
+        try {
+<span class="fc" id="L45">            List&lt;UsuarioDTO&gt; usuariosDTO = usuarioService.findAll()</span>
+<span class="fc" id="L46">                    .stream()</span>
+<span class="fc" id="L47">                    .map(UsuarioMapper::toDTO) // Convertir la entidad a DTO</span>
+<span class="fc" id="L48">                    .toList();</span>
+<span class="fc" id="L49">            return ResponseEntity.ok(usuariosDTO);</span>
+<span class="nc" id="L50">        } catch (Exception e) {</span>
+<span class="nc" id="L51">            return ResponseEntity.internalServerError().build();</span>
+        }
+    }
+
+    @GetMapping(&quot;/buscar/{id}&quot;)
+    public ResponseEntity&lt;UsuarioDTO&gt; buscar(@PathVariable Long id) {
+        try {
+<span class="pc bpc" id="L58" title="1 of 4 branches missed.">            if (id == null || id &lt;= 0) {</span>
+<span class="fc" id="L59">                return ResponseEntity.badRequest().build();</span>
+            }
+<span class="fc" id="L61">            Optional&lt;Usuario&gt; usuario = usuarioService.findById(id);</span>
+<span class="fc" id="L62">            return usuario.map(value -&gt; ResponseEntity.ok(UsuarioMapper.toDTO(value)))</span>
+<span class="fc" id="L63">                    .orElseGet(() -&gt; ResponseEntity.ok().build());</span>
+<span class="nc" id="L64">        } catch (Exception e) {</span>
+<span class="nc" id="L65">            return ResponseEntity.internalServerError().build();</span>
+        }
+    }
+
+    @PostMapping(&quot;/agregar&quot;)
+    public ResponseEntity&lt;UsuarioDTO&gt; agregar(@RequestBody UsuarioDTO usuarioDTO) {
+        try {
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">            if (UsuarioUtil.isEmptyOrNull(usuarioDTO.getNombre())</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">                    || UsuarioUtil.isEmptyOrNull(usuarioDTO.getEmail())</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">                    || UsuarioUtil.isEmptyOrNull(usuarioDTO.getPassword())) {</span>
+<span class="fc" id="L75">                return ResponseEntity.badRequest().build();</span>
+            }
+<span class="fc" id="L77">            Usuario usuario = UsuarioMapper.toEntity(usuarioDTO);</span>
+<span class="fc" id="L78">            Usuario savedUsuario = usuarioService.save(usuario);</span>
+<span class="fc" id="L79">            return ResponseEntity.ok(UsuarioMapper.toDTO(savedUsuario));</span>
+<span class="nc" id="L80">        } catch (Exception e) {</span>
+<span class="nc" id="L81">            return ResponseEntity.internalServerError().build();</span>
+        }
+    }
+
+    @PutMapping(&quot;/actualizar/{id}&quot;)
+    public ResponseEntity&lt;UsuarioDTO&gt; actualizar(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
+        try {
+<span class="fc" id="L88">            log.info(&quot;id: {}, usuarioDTO: {}&quot;, id, usuarioDTO);</span>
+<span class="pc bpc" id="L89" title="1 of 4 branches missed.">            if (id == null || id &lt;= 0) {</span>
+<span class="fc" id="L90">                return ResponseEntity.badRequest().build();</span>
+            }
+<span class="fc" id="L92">            Usuario usuario = UsuarioMapper.toEntity(usuarioDTO);</span>
+<span class="fc" id="L93">            usuario.setId(id);</span>
+<span class="fc" id="L94">            log.info(&quot;usuario: {}&quot;, usuario);</span>
+<span class="fc" id="L95">            Usuario updatedUsuario = usuarioService.save(usuario);</span>
+<span class="fc" id="L96">            return ResponseEntity.ok(UsuarioMapper.toDTO(updatedUsuario));</span>
+<span class="nc" id="L97">        } catch (Exception e) {</span>
+<span class="nc" id="L98">            log.error(&quot;error: {}&quot;, e.getMessage());</span>
+<span class="nc" id="L99">            return ResponseEntity.internalServerError().build();</span>
+        }
+    }
+
+    @DeleteMapping(&quot;/eliminar/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; eliminar(@PathVariable Long id) {
+        try {
+<span class="pc bpc" id="L106" title="1 of 4 branches missed.">            if (id == null || id &lt;= 0) {</span>
+<span class="fc" id="L107">                return ResponseEntity.badRequest().build();</span>
+            }
+<span class="fc" id="L109">            usuarioService.delete(id);</span>
+<span class="fc" id="L110">            return ResponseEntity.ok().build();</span>
+<span class="nc" id="L111">        } catch (Exception e) {</span>
+<span class="nc" id="L112">            return ResponseEntity.internalServerError().build();</span>
+        }
+    }
+
+    @PutMapping(&quot;/recuperar/password/{email}/{password}&quot;)
+    public ResponseEntity&lt;UsuarioDTO&gt; recuperarPassword(@PathVariable String email, @PathVariable String password) {
+<span class="fc" id="L118">        log.info(&quot;email: {}, password: {}&quot;, email, password);</span>
+        try {
+<span class="pc bpc" id="L120" title="2 of 4 branches missed.">            if (UsuarioUtil.isEmptyOrNull(email) || UsuarioUtil.isEmptyOrNull(password)) {</span>
+<span class="nc" id="L121">                return ResponseEntity.badRequest().build();</span>
+            }
+<span class="fc" id="L123">            usuarioService.passwordRecovery(email, password);</span>
+<span class="fc" id="L124">            return ResponseEntity.ok().build();</span>
+<span class="nc" id="L125">        } catch (Exception e) {</span>
+<span class="nc" id="L126">            log.error(&quot;error: {}&quot;, e.getMessage());</span>
+<span class="nc" id="L127">            return ResponseEntity.internalServerError().build();</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

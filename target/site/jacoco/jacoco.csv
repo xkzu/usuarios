@@ -1,0 +1,9 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+usuario,cl.duoc.app,App,0,8,0,0,0,3,0,2,0,2
+usuario,cl.duoc.app.mapper,UsuarioMapper,0,40,0,0,0,13,0,2,0,2
+usuario,cl.duoc.app.model,Usuario,36,204,24,18,0,8,20,17,0,16
+usuario,cl.duoc.app.controller,UsuarioController,41,169,7,15,17,40,7,16,0,12
+usuario,cl.duoc.app.service,UsuarioServiceImpl,0,38,0,0,0,11,0,7,0,7
+usuario,cl.duoc.app.dto,UsuarioDTO,36,204,24,18,0,8,20,17,0,16
+usuario,cl.duoc.app.util,UsuarioUtil,0,10,0,4,0,1,0,3,0,1
+usuario,cl.duoc.app.config,WebConfig,0,47,0,0,0,7,0,2,0,2
