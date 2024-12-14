@@ -1,10 +1,11 @@
 cl\duoc\app\dto\UsuarioDTO.class
 cl\duoc\app\service\UsuarioService.class
 cl\duoc\app\App.class
-cl\duoc\app\service\UsuarioServiceImpl.class
 cl\duoc\app\model\Usuario.class
-cl\duoc\app\repository\UsuarioRepository.class
 cl\duoc\app\util\UsuarioUtil.class
 cl\duoc\app\controller\UsuarioController.class
-cl\duoc\app\config\WebConfig.class
+cl\duoc\app\config\CorsConfig.class
+cl\duoc\app\service\UsuarioServiceImpl.class
+cl\duoc\app\repository\UsuarioRepository.class
+cl\duoc\app\config\CorsConfig$1.class
 cl\duoc\app\mapper\UsuarioMapper.class

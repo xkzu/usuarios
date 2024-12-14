@@ -1,7 +1,7 @@
 F:\Dev\Duoc\Fullstack 3\usuario\src\main\java\cl\duoc\app\dto\UsuarioDTO.java
 F:\Dev\Duoc\Fullstack 3\usuario\src\main\java\cl\duoc\app\mapper\UsuarioMapper.java
-F:\Dev\Duoc\Fullstack 3\usuario\src\main\java\cl\duoc\app\config\Config.java
 F:\Dev\Duoc\Fullstack 3\usuario\src\main\java\cl\duoc\app\service\UsuarioServiceImpl.java
+F:\Dev\Duoc\Fullstack 3\usuario\src\main\java\cl\duoc\app\config\CorsConfig.java
 F:\Dev\Duoc\Fullstack 3\usuario\src\main\java\cl\duoc\app\App.java
 F:\Dev\Duoc\Fullstack 3\usuario\src\main\java\cl\duoc\app\model\Usuario.java
 F:\Dev\Duoc\Fullstack 3\usuario\src\main\java\cl\duoc\app\controller\UsuarioController.java
