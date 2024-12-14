@@ -17,7 +17,6 @@ import java.util.Optional;
 @Log4j2
 @RestController
 @RequestMapping("/usuarios")
-@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", allowCredentials = "true")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
